@@ -166,9 +166,10 @@ jobs:
         id: tag
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         run: |
-          echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
+          echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
           touch release.txt
-          echo "::set-output name=status::success"
+          echo -e "##### OpenWrt 固件信息 \n \t- 使用lede的源码 \n \t- 默认网关: 192.168.10.1 \n \t- 默认用户: root \n \t- 默认密码: password \n \t- 已装插件: (后续再补充)"
+          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Upload firmware to release
         uses: softprops/action-gh-release@v1
@@ -186,11 +187,3 @@ jobs:
           retain_days: 1
           keep_minimum_runs: 3
           token: ${{ secrets.GITHUB_TOKEN }}
-          body: |
-
-            ### OpenWrt 固件信息 
-            - 使用lede的源码
-            - 默认网关: 192.168.10.1
-            - 默认用户: root
-            - 默认密码: password(记得更改)
-            - 已装插件: (后续再补充)
