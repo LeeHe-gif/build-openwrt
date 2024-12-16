@@ -102,7 +102,11 @@ jobs:
           chmod +x ${DIY_P1_SH}
           cd openwrt/
           ${GITHUB_WORKSPACE}/${DIY_P1_SH}
-
+          if [[ "${{ inputs.source_branch }}" == *"openwrt"* ]]; then
+          cd package
+          git clone https://github.com/jerrykuku/luci-theme-argon.git
+          fi
+          
       - name: Update feeds
         run: cd openwrt/ && ./scripts/feeds update -a
 
@@ -171,7 +175,18 @@ jobs:
         run: |
           echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
           touch release.txt
-          echo -e "##### OpenWrt 固件信息 \n \t- 使用lede的源码 \n \t- 默认网关: 192.168.10.1 \n \t- 默认用户: root \n \t- 默认密码: password \n \t- 已装插件: (后续再补充)"
+          if [[ "${{ inputs.source_branch }}" == *"openwrt"* ]]; then
+          echo -e "使用官方openwrt源码编译" >> release.txt
+          elif [[ "${{ inputs.source_branch }}" == *"lede"* ]]; then
+          echo -e "使用lede源码编译" >> release.txt
+          elif [[ "${{ inputs.source_branch }}" == *"immortalwrt"* ]]; then
+          echo -e "使用immortalwrt源码编译" >> release.txt
+          elif [[ "${{ inputs.source_branch }}" == *"Lienol"* ]]; then
+          echo -e "使用Lienol源码编译" >> release.txt
+          else
+              echo "Unknown source code repository." >> release.txt
+              exit 1
+          fi
           echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Upload firmware to release
