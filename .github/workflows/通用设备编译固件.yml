@@ -218,4 +218,4 @@ jobs:
         with:
           retain_days: 1
           keep_minimum_runs: 3
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
